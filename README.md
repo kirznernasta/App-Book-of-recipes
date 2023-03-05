@@ -1,5 +1,8 @@
 # Android applicatoin "Book of recipes"
 ## Kirzner Nastya, group number: 153502
+
+## System’s class diagram:
+![Class diagram](diagram.png)
 ### Here are the main functions of a Flutter app called "Book of Recipes":
 
  * ***Search***: Allow users to search for recipes based on ingredients, cuisine, course, or recipe name. The search feature provides relevant results and allows for filtering by various criteria.
