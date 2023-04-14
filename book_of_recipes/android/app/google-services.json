@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "226366911037",
+    "project_id": "book-of-recipes-67840",
+    "storage_bucket": "book-of-recipes-67840.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:226366911037:android:6309a39fbf08298c1ab054",
+        "android_client_info": {
+          "package_name": "com.kirzner.book_of_recipes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "226366911037-kfg2ggthbtt6vdue1avtslb407min0jv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeRGqpvxcPijBsw_mlJgdI3OJjr3KVTPI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "226366911037-kfg2ggthbtt6vdue1avtslb407min0jv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

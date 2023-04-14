@@ -34,7 +34,7 @@ class ShoppingList extends StatelessWidget {
       itemCount: 5,
       itemBuilder: (_, __) {
         return Container(
-          margin: EdgeInsets.symmetric(
+          margin: const EdgeInsets.symmetric(
             vertical: 8,
           ),
           width: 240,
