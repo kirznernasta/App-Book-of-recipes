@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'constants.dart';
-import 'presentation/pages/discover/discover_cubit.dart';
-import 'presentation/pages/email_verification/email_verification_cubit.dart';
-import 'presentation/pages/favourite/favourite_cubit.dart';
-import 'presentation/pages/home/home_cubit.dart';
-import 'presentation/pages/login/login_cubit.dart';
-import 'presentation/pages/main_page/main_page_cubit.dart';
-import 'presentation/pages/profile/profile_cubit.dart';
-import 'presentation/pages/shopping_list/shopping_list_cubit.dart';
-import 'presentation/pages/sing_up/sign_up_cubit.dart';
-import 'presentation/pages/welcome/welcome.dart';
-import 'service/firebase/authentication.dart';
+import 'services/firebase/authentication.dart';
+import 'views/pages/discover/discover_cubit.dart';
+import 'views/pages/email_verification/email_verification_cubit.dart';
+import 'views/pages/favourite/favourite_cubit.dart';
+import 'views/pages/home/home_cubit.dart';
+import 'views/pages/login/login_cubit.dart';
+import 'views/pages/main_page/main_page_cubit.dart';
+import 'views/pages/profile/profile_cubit.dart';
+import 'views/pages/shopping_list/shopping_list_cubit.dart';
+import 'views/pages/sing_up/sign_up_cubit.dart';
+import 'views/pages/welcome/welcome.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);

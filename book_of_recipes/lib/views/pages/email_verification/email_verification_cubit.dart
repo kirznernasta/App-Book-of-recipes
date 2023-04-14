@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../service/firebase/authentication.dart';
+import '../../../services/firebase/authentication.dart';
 
 part 'email_verification_state.dart';
 

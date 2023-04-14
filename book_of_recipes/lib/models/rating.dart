@@ -1,14 +1,12 @@
-class Comment {
+class Rating {
   final String id;
-  final String text;
-  final DateTime date;
+  final double value;
   final String username;
   final String recipeId;
 
-  Comment({
+  Rating({
     required this.id,
-    required this.text,
-    required this.date,
+    required this.value,
     required this.username,
     required this.recipeId,
   });
