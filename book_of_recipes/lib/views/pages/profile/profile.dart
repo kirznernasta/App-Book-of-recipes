@@ -1,46 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../constants.dart';
+import '../../../models/user.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../shopping_list/shopping_list_cubit.dart';
 import 'profile_cubit.dart';
 
-class Profile extends StatelessWidget {
-  const Profile({Key? key}) : super(key: key);
+class Profile extends StatefulWidget {
+  final User? user;
+  const Profile({required this.user, Key? key}) : super(key: key);
 
-  AppBar _appBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      iconTheme: const IconThemeData(
-        color: accentColor,
-      ),
-      title: const Text(
-        'Account',
-        style: TextStyle(
-          color: accentColor,
-        ),
-      ),
-    );
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<ProfileCubit>()
+        .init(widget.user?.name ?? 'USERNAME IS NOT PROVIDED');
   }
 
-  Drawer _drawer() {
-    return const Drawer();
-  }
-
-  Widget _body() {
+  Widget _body(ProfileState state) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _userImage(),
         _username(),
-        _statistics(),
-        _addRecipeButton(),
-        _seeAllMyRecipesButton(),
-        _myRecipesListView(),
+        _statistics(state),
       ],
     );
   }
 
   Widget _userImage() {
+    final userImage = widget.user?.image;
     return Align(
       alignment: Alignment.center,
       child: Container(
@@ -49,28 +44,45 @@ class Profile extends StatelessWidget {
         ),
         width: 96,
         height: 96,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.teal,
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(
               96,
             ),
           ),
+          image: userImage != null && userImage != ''
+              ? DecorationImage(
+                  image: NetworkImage(
+                    userImage,
+                  ),
+                  fit: BoxFit.cover,
+                )
+              : null,
         ),
+        child: userImage == '' || userImage == null
+            ? const Center(
+                child: Icon(
+                  Icons.person,
+                  size: 72,
+                ),
+              )
+            : null,
       ),
     );
   }
 
   Widget _username() {
-    return const Padding(
-      padding: EdgeInsets.all(8.0),
+    final username = widget.user?.name;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Text(
-        'USER NAME',
+        '${username ?? 'USERNAME IS NOT PROVIDED'}',
       ),
     );
   }
 
-  Widget _statistics() {
+  Widget _statistics(ProfileState state) {
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: 24,
@@ -89,7 +101,7 @@ class Profile extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _publishedRecipes(),
+          _publishedRecipes(state),
           _divider(),
           _likes(),
         ],
@@ -97,19 +109,22 @@ class Profile extends StatelessWidget {
     );
   }
 
-  Widget _publishedRecipes() {
+  Widget _publishedRecipes(ProfileState state) {
     return Padding(
       padding: const EdgeInsets.only(
-        left: 20.0,
+        left: 32.0,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Text(
-            'NUMBER',
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              widget.user!.favouriteRecipeIds.length.toString(),
+            ),
           ),
-          Text(
-            'Published recipes',
+          const Text(
+            'Saved recipes',
           ),
         ],
       ),
@@ -125,96 +140,39 @@ class Profile extends StatelessWidget {
   }
 
   Widget _likes() {
+    final num = context.read<ShoppingListCubit>().state.shoppingProducts.length;
     return Padding(
       padding: const EdgeInsets.only(
-        right: 64.0,
+        right: 32.0,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Text(
-            'NUMBER',
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              '$num prod. in',
+            ),
           ),
-          Text(
-            'Likes',
+          const Text(
+            'Shopping list',
           ),
         ],
       ),
     );
   }
 
-  Widget _addRecipeButton() {
-    return Container(
-      width: 160,
-      height: 48,
-      margin: const EdgeInsets.symmetric(
-        vertical: 16,
-      ),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(
-            16,
-          ),
-        ),
-        color: accentColor,
-      ),
-      child: const Center(
-        child: Text(
-          'Add recipe',
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _seeAllMyRecipesButton() {
-    return GestureDetector(
-      child: const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: Text(
-            'See all my recipies',
-            style: TextStyle(
-              color: accentColor,
-              decoration: TextDecoration.underline,
-              fontSize: 20,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _myRecipesListView() {
-    return Expanded(
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 4,
-        itemBuilder: (_, __) => Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(
-                8,
-              ),
-            ),
-          ),
-          child: const Placeholder(),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: _appBar(context),
-          drawer: _drawer(),
-          body: _body(),
+    return BlocBuilder<ShoppingListCubit, ShoppingListState>(
+      builder: (_, __) {
+        return BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (context, state) {
+            return Scaffold(
+              appBar: customAppBar(title: 'Account', context: context),
+              body: _body(state),
+            );
+          },
         );
       },
     );

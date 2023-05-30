@@ -1,16 +1,16 @@
-part of 'main_page_cubit.dart';
+part of 'client_main_page_cubit.dart';
 
-class MainPageState {
+class ClientMainPageState {
   final int selectedIndex;
 
-  MainPageState({
+  ClientMainPageState({
     this.selectedIndex = 0,
   });
 
-  MainPageState copyWith({
+  ClientMainPageState copyWith({
     int? changedSelectedIndex,
   }) =>
-      MainPageState(
+      ClientMainPageState(
         selectedIndex: changedSelectedIndex ?? selectedIndex,
       );
 }

@@ -2,12 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../constants.dart';
+import '../../../models/user.dart';
+import '../../widgets/hint_card.dart';
+import '../../widgets/recipe_card.dart';
+import '../../widgets/search_field.dart';
 import 'home_cubit.dart';
 
-class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+class Home extends StatefulWidget {
+  final User? user;
+  const Home({required this.user, Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeCubit>().init(widget.user!.id);
+  }
 
   AppBar _appBar(BuildContext context) {
+    final username = widget.user?.name;
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -15,34 +32,50 @@ class Home extends StatelessWidget {
         padding: const EdgeInsets.all(
           4,
         ),
-        child: _userImage(),
+        child: _userImage(context),
       ),
-      title: const Text('Hi, username'),
+      title: Text('Hi, ${username ?? 'USERNAME IS NOT PROVIDED'}'),
     );
   }
 
-  Widget _userImage() {
+  Widget _userImage(BuildContext context) {
+    final userImage = widget.user?.image;
     return Container(
       width: 16,
       height: 16,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
           Radius.circular(
             32,
           ),
         ),
-        color: Colors.teal,
+        image: userImage != null && userImage != ''
+            ? DecorationImage(
+                image: NetworkImage(
+                  userImage,
+                ),
+                fit: BoxFit.cover,
+              )
+            : null,
+        color: Colors.grey,
       ),
+      child: userImage == '' || userImage == null
+          ? const Center(
+              child: Icon(
+                Icons.person,
+                size: 32,
+              ),
+            )
+          : null,
     );
   }
 
-  Widget _body() {
+  Widget _body(BuildContext context, HomeState state) {
     return Column(
       children: [
         _title(),
-        _searchField(),
-        _trendingAndSeeAll(),
-        _trendingListView(),
+        _searchField(context),
+        _trendingListView(context, state),
       ],
     );
   }
@@ -59,7 +92,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _searchField() {
+  Widget _searchField(BuildContext context) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -67,103 +100,43 @@ class Home extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _searchTextField(),
-            _filterButton(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _trendingAndSeeAll() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Trending',
-              style: TextStyle(
-                fontSize: 20,
-              ),
+            SearchField(
+              onChanged: context.read<HomeCubit>().requestChanged,
             ),
-            _seeAllButton(),
           ],
         ),
       ),
     );
   }
 
-  Widget _searchTextField() {
-    return Expanded(
-      child: TextField(
-        decoration: InputDecoration(
-          prefixIcon: const Icon(
-            Icons.search,
+  Widget _trendingListView(BuildContext context, HomeState state) {
+    if (state.recipes.isEmpty) {
+      return const Expanded(
+        flex: 7,
+        child: HintCard(
+          text: 'There are no recipes with such a request.',
+          style: TextStyle(
+            fontSize: 32,
+            color: Colors.white30,
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(48.0),
-          ),
-          hintText: 'Search recipes...',
+          isMaxWidth: true,
         ),
-      ),
-    );
-  }
-
-  Widget _filterButton() {
-    return Container(
-      margin: const EdgeInsets.only(
-        left: 16,
-      ),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(
-            48,
-          ),
-        ),
-        color: accentColor,
-      ),
-      child: IconButton(
-        onPressed: () {},
-        icon: const Icon(
-          Icons.tune,
-          color: Colors.black,
-        ),
-      ),
-    );
-  }
-
-  Widget _seeAllButton() {
-    return GestureDetector(
-      child: const Text(
-        'See all',
-        style: TextStyle(
-          color: accentColor,
-          decoration: TextDecoration.underline,
-          fontSize: 20,
-        ),
-      ),
-    );
-  }
-
-  Widget _trendingListView() {
+      );
+    }
     return Expanded(
       flex: 7,
       child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 4,
-        itemBuilder: (_, __) => Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(
-                8,
-              ),
-            ),
-          ),
-          child: const Placeholder(),
+        scrollDirection: Axis.vertical,
+        itemCount: state.recipes.length,
+        itemBuilder: (_, index) => RecipeCard(
+          recipe: state.recipes[index],
+          isFavorite: state.isFavoriteRecipe(state.recipes[index].id),
+          onHeartPressed: () async {
+            await context.read<HomeCubit>().toggleFavorite(
+                  widget.user!,
+                  state.recipes[index].id,
+                );
+          },
         ),
       ),
     );
@@ -171,11 +144,11 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
-      builder: (context, state) => Scaffold(
+    return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
+      return Scaffold(
         appBar: _appBar(context),
-        body: _body(),
-      ),
-    );
+        body: _body(context, state),
+      );
+    });
   }
 }

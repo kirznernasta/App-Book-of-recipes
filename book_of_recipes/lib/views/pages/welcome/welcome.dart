@@ -8,20 +8,23 @@ class Welcome extends StatelessWidget {
   const Welcome({Key? key}) : super(key: key);
 
   Widget _body(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(
-        bottom: 32,
-      ),
-      decoration: BoxDecoration(
-        image: _backgroundImage(),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          _logo(),
-          _getStartedButton(context),
-          _hintText(context),
-        ],
+    return SingleChildScrollView(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        padding: const EdgeInsets.only(
+          bottom: 32,
+        ),
+        decoration: BoxDecoration(
+          image: _backgroundImage(),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            _logo(),
+            _getStartedButton(context),
+            _hintText(context),
+          ],
+        ),
       ),
     );
   }

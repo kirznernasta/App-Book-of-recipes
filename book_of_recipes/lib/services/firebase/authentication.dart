@@ -69,4 +69,15 @@ class Authentication {
       rethrow;
     }
   }
+
+  Future<void> updateProfile({
+    required String image,
+    required String username,
+  }) async {
+    final user = currentUser;
+    if (user != null) {
+      await user.updateDisplayName(username);
+      await user.updatePhotoURL(image);
+    }
+  }
 }

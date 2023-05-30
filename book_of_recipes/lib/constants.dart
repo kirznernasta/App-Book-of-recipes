@@ -8,3 +8,5 @@ const welcomeScreenBackgroundImage =
 const logoHeroTag = 'logoIcon';
 
 const verifiedAnimation = 'assets/animations/lottie/verified.json';
+
+const timeChoices = ['h', 'm'];

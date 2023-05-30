@@ -1,15 +1,26 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../models/user.dart';
+import '../../../repositories/user_repository.dart';
 import '../../../services/firebase/authentication.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  final Authentication _firebaseAuthentication;
+  final UserRepository _userRepository;
+  final Authentication _authentication;
 
-  LoginCubit({required Authentication firebaseAuthentication})
-      : _firebaseAuthentication = firebaseAuthentication,
+  LoginCubit({
+    required Authentication firebaseAuthentication,
+    required UserRepository userRepository,
+  })  : _authentication = firebaseAuthentication,
+        _userRepository = userRepository,
         super(LoginState());
+
+  Future<User?> singUppedUser() async {
+    final userId = _authentication.currentUser!.uid;
+    return await _userRepository.receiveUserById(userId);
+  }
 
   void emailChanged(String value) => emit(
         state.copyWith(
@@ -48,7 +59,7 @@ class LoginCubit extends Cubit<LoginState> {
           tryingLogIn: true,
         ),
       );
-      final authenticationTry = await _firebaseAuthentication.logIn(
+      final authenticationTry = await _authentication.logIn(
         email: state.email,
         password: state.password,
       );

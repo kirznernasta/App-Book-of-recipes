@@ -26,26 +26,20 @@ class _SignUpState extends State<SignUp> {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: state.isSignUpSuccessful
+          children: state.isTryingSingUp || state.isSignUpSuccessful
               ? [
                   _logo(),
-                  _successText(),
-                  _verifyButton(),
+                  _loadingAnimation(state),
                 ]
-              : state.isTryingSingUp
-                  ? [
-                      _logo(),
-                      _loadingAnimation(),
-                    ]
-                  : [
-                      _logo(),
-                      _emailTextField(),
-                      _passwordTextField(state),
-                      _retypePasswordTextField(state),
-                      _signUpButton(),
-                      _errorText(state),
-                      _hintText(),
-                    ],
+              : [
+                  _logo(),
+                  _emailTextField(),
+                  _passwordTextField(state),
+                  _retypePasswordTextField(state),
+                  _signUpButton(),
+                  _errorText(state),
+                  _hintText(),
+                ],
         ),
       ),
     );
@@ -73,21 +67,6 @@ class _SignUpState extends State<SignUp> {
           Icons.auto_stories_outlined,
           size: 240,
           color: accentColor,
-        ),
-      ),
-    );
-  }
-
-  Widget _successText() {
-    return const Padding(
-      padding: EdgeInsets.only(
-        top: 48,
-        bottom: 24,
-      ),
-      child: Text(
-        'Sing Up successfully!',
-        style: TextStyle(
-          fontSize: 24,
         ),
       ),
     );
@@ -266,7 +245,17 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Widget _loadingAnimation() {
+  Widget _loadingAnimation(SignUpState state) {
+    if (state.isSignUpSuccessful) {
+      Future.delayed(const Duration(milliseconds: 5), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const EmailVerification(),
+          ),
+        );
+      });
+    }
     return const Padding(
       padding: EdgeInsets.only(
         bottom: 120,
@@ -344,7 +333,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SignUpCubit, SignUpState>(
-      builder: (context, state) {
+      builder: (_, state) {
         return Scaffold(
           body: _body(state),
         );

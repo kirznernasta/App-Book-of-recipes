@@ -18,26 +18,21 @@ class Login extends StatelessWidget {
           image: _backgroundImage(),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: state.isLogInSuccessful
+          children: state.isTryingLogIn || state.isLogInSuccessful
               ? [
                   _logo(),
-                  _successText(),
-                  _getStartedButton(context),
+                  _loadingAnimation(context, state),
                 ]
-              : state.isTryingLogIn
-                  ? [
-                      _logo(),
-                      _loadingAnimation(),
-                    ]
-                  : [
-                      _logo(),
-                      _emailTextField(context),
-                      _passwordTextField(context, state),
-                      _logInButton(context),
-                      _errorText(state),
-                      _hintText(context),
-                    ],
+              : [
+                  _logo(),
+                  _emailTextField(context),
+                  _passwordTextField(context, state),
+                  _logInButton(context),
+                  _errorText(state),
+                  _hintText(context),
+                ],
         ),
       ),
     );
@@ -70,63 +65,20 @@ class Login extends StatelessWidget {
     );
   }
 
-  Widget _successText() {
-    return const Padding(
-      padding: EdgeInsets.only(
-        top: 48,
-        bottom: 24,
-      ),
-      child: Text(
-        'Log In successfully!',
-        style: TextStyle(
-          fontSize: 24,
-        ),
-      ),
-    );
-  }
-
-  Widget _getStartedButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
+  Widget _loadingAnimation(BuildContext context, LoginState state) {
+    if (state.isLogInSuccessful) {
+      Future.delayed(const Duration(milliseconds: 5), () async {
+        final user = await context.read<LoginCubit>().singUppedUser();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => const MainPage(),
-          ),
-        );
-      },
-      child: Container(
-        width: 350,
-        height: 48,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 8,
-        ),
-        margin: const EdgeInsets.only(
-          bottom: 16,
-          top: 16,
-        ),
-        decoration: BoxDecoration(
-          color: accentColor,
-          borderRadius: BorderRadius.circular(
-            32,
-          ),
-        ),
-        child: const Center(
-          child: Text(
-            'Get started',
-            style: TextStyle(
-              color: Colors.black,
-              decoration: TextDecoration.none,
-              fontSize: 16,
+            builder: (_) => MainPage(
+              user: user,
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _loadingAnimation() {
+        );
+      });
+    }
     return const Padding(
       padding: EdgeInsets.only(
         bottom: 120,

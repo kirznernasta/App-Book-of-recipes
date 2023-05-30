@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "226366911037",
-    "project_id": "book-of-recipes-67840",
-    "storage_bucket": "book-of-recipes-67840.appspot.com"
+    "project_number": "8860796518",
+    "project_id": "course-work-book-of-recipes",
+    "storage_bucket": "course-work-book-of-recipes.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:226366911037:android:6309a39fbf08298c1ab054",
+        "mobilesdk_app_id": "1:8860796518:android:88af3ca036c0991b5f8fa7",
         "android_client_info": {
           "package_name": "com.kirzner.book_of_recipes"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "226366911037-kfg2ggthbtt6vdue1avtslb407min0jv.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBeRGqpvxcPijBsw_mlJgdI3OJjr3KVTPI"
+          "current_key": "AIzaSyBO45vBaVQxawks9R7-yXM3QBAyXrNNtWE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "226366911037-kfg2ggthbtt6vdue1avtslb407min0jv.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
